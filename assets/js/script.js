@@ -18,20 +18,19 @@ function setupSchedule() {
 
     CURRENT_DATE.text(moment().format("dddd, MMMM Do"));
 
-    for(let i = 0; i < events.length; i++) {
+    for (let i = 0; i < events.length; i++) {
         let row_el = $("<div>")
-            .addClass("row")
-            .attr('id', events[i].hour);
+            .addClass("row");
 
         let hour_el = $("<div>")
             .addClass("col-1 hour")
             // Logic setup to handle any time range from 12AM - 11PM 
             .text((events[i].hour < 12) ? ((events[i].hour != 0) ? events[i].hour + "AM" : "12AM") : (events[i].hour != 12) ? events[i].hour - 12 + "PM" : events[i].hour + "PM");
 
-        
+
         let event_el = $("<textarea>")
             .addClass("col-10 description")
-            .text(events[i].event);
+            .text(events[i].text);
         if (events[i].hour < cur_time.hour()) {
             event_el.addClass("past");
         } else if (events[i].hour == cur_time.hour()) {
@@ -40,8 +39,10 @@ function setupSchedule() {
             event_el.addClass("future");
         }
         events[i].element = event_el;
+
         let save_el = $("<button>")
-            .addClass("col-1 saveBtn");
+            .addClass("col-1 saveBtn")
+            .attr('id', i);
 
         row_el.append(hour_el, event_el, save_el);
 
@@ -57,7 +58,7 @@ function defaultEvents() {
     for (let i = start; i <= end; i++) {
         tmp.push({
             hour: i,
-            event: ""
+            text: ""
         });
     }
     return tmp;
@@ -95,7 +96,15 @@ function checkTime() {
     });
 }
 
+function saveEvents(button) {
+    let id = $(button.target).attr('id');
+    events[id].text = events[id].element.val();
+    localStorage.setItem("events", JSON.stringify(events));
+}
+
 // Load and set events
 initEvents();
 // Start timer to check time every minute
 setInterval(checkTime, 1000 * 60);
+// Add listener to all save buttons to save text to localStorage
+$(".container").on('click', 'button', saveEvents);
