@@ -23,7 +23,7 @@ function setupSchedule() {
             .addClass("row");
 
         let hour_el = $("<div>")
-            .addClass("col-1 hour")
+            .addClass("col-1 hour text-center")
             // Logic setup to handle any time range from 12AM - 11PM 
             .text((events[i].hour < 12) ? ((events[i].hour != 0) ? events[i].hour + "AM" : "12AM") : (events[i].hour != 12) ? events[i].hour - 12 + "PM" : events[i].hour + "PM");
 
@@ -31,6 +31,7 @@ function setupSchedule() {
         let event_el = $("<textarea>")
             .addClass("col-10 description")
             .text(events[i].text);
+        // Set class based on when it is
         if (events[i].hour < cur_time.hour()) {
             event_el.addClass("past");
         } else if (events[i].hour == cur_time.hour()) {
@@ -38,11 +39,17 @@ function setupSchedule() {
         } else {
             event_el.addClass("future");
         }
+        // Save a reference to this element for getting text later
         events[i].element = event_el;
 
         let save_el = $("<button>")
-            .addClass("col-1 saveBtn")
+            .addClass("col-1 saveBtn btn")
             .attr('id', i);
+
+        let save_icon_el = $("<i>")
+            .addClass("bi bi-check-square");
+
+        save_el.append(save_icon_el);
 
         row_el.append(hour_el, event_el, save_el);
 
