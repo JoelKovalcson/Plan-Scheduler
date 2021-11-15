@@ -85,7 +85,7 @@ function initEvents() {
 }
 
 function checkTime() {
-    cur_time = moment();
+    //cur_time = moment();
     events.forEach((event) => {
         if (event.hour < cur_time.hour()) {
             event.element.addClass("past");
